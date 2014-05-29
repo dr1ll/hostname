@@ -25,7 +25,7 @@ import commandeer
 
 # vars
 
-version = "0.1.28"
+version = "0.1.30"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -133,6 +133,15 @@ def fixname():
     print"Folgender Hostname wird dauerhaft gespeichert: "+fix
     os.system("hostname -b {0}".format(fix))
 
+def androidname_command():
+    laenge = 16
+    lowercase = string.ascii_lowercase
+    androidchars = Numbers+lowercase
+    finalname = 'android-'
+    for i in range(laenge):
+        finalname += random.choice(androidchars)
+    return finalname
+
 
 def setname(toset):
     os.system("hostname -b {0}".format(toset))
@@ -154,10 +163,11 @@ def start_command():
     print("5 - Permanenten Hostnamen in das System eingeben")
     print("6 - Aktuellen Hostnamen nur in Datei dauerhaft speichern")
     print("7 - Vormals gespeicherten Hostnamen reaktivieren (aus Datei resetten)")
+    print("8 - Android-Hostnamen setzen")
     print
     print"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
     print
-    choice = str(raw_input("Geben Sie die Zahl der gewünschten Aktion (1-7) ein: "))
+    choice = str(raw_input("Geben Sie die Zahl der gewünschten Aktion (1-8) ein >>> "))
 
     if choice == "1":
         nametoset = randomname()
@@ -171,15 +181,17 @@ def start_command():
         replacename()
     elif choice == "6":
         filename()
-    else:
+    elif choice == "7":
         fixname()
+    else:
+        nametoset = androidname_command()
 
-    if choice == "1" or choice == "2" or choice == "3" or choice == "4":
+    if choice == "1" or choice == "2" or choice == "3" or choice == "4" or choice == "8":
         setname(nametoset)
         weiter = False
         while weiter == False:
             weiter = True
-            answer = raw_input("\nAktuellen Hostnamen dauerhaft abspeichern (J/n)? > ")
+            answer = raw_input("\nAktuellen Hostnamen dauerhaft abspeichern (J/n)? >>> ")
             if answer == "J" or answer == "j":
                 outputfile = open('/etc/hostname', 'w')
                 outputfile.write(nametoset)
