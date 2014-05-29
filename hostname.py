@@ -33,6 +33,7 @@ OldName = socket.gethostname()
 HostName = socket.gethostname()
 inputfile = open('/etc/hostname', 'r')
 StoredName = inputfile.read()
+inputfile.close()
 nametoset = ''
 Script_Dir = os.path.dirname(__file__)
 Hostnamelist_Filename = ".HostnameWordlist"
