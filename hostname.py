@@ -52,9 +52,9 @@ def makenamelist():
 
 
 def randomname():
-    laenge = random.randint(2, 11)
+    length = random.randint(2, 11)
     finalname = random.choice(Ascii)
-    for i in range(laenge):
+    for i in range(length):
         finalname += random.choice(AllChars)
     return finalname
 
@@ -65,18 +65,18 @@ def listname():
 
 
 def combinename():
-    laenge = random.randint(3, 7)
+    length = random.randint(3, 7)
     numbers = string.digits
     finalname = random.choice(NameList)
-    for i in range(laenge):
+    for i in range(length):
         finalname += random.choice(numbers)
     return finalname
 
 
 def ownname():
-    weiter = False
+    goon = False
     own = ''
-    while weiter == False:
+    while goon == False:
         print"\n4: Hostnamen nun manuell eingeben \n"
         print"(Groß- Kleinschrift Zahl | keine Leer- und Sonderzeichen)"
         weiter = True
@@ -85,32 +85,32 @@ def ownname():
         for c in own:
             if not c in Ascii and i == 1:
                 print"*** Fehler: ERSTER Buchstabe immer nur a-z oder A-Z! ***\n"
-                weiter = False
+                goon = False
                 break
             if not c in AllChars:
                 print"*** Fehler: Geben Sie nur a-z, A-Z, 0-9 ein! ***\n"
-                weiter = False
+                goon = False
                 break
             i += 1
     return own
 
 
 def replacename():
-    weiter = False
-    while weiter == False:
+    goon = False
+    while goon == False:
         print"\n5: Permanenten Hostnamen nun manuell eingeben \n"
         print"(Groß/Kleinschrift/Zahl - keine Leer/Sonderzeichen)"
-        weiter = True
+        goon = True
         newname = raw_input("\nEingabe >>> ")
         i = 1
         for c in newname:
             if not c in Ascii and i == 1:
                 print"*** Fehler: ERSTER Buchstabe immer nur a-z oder A-Z! ***\n"
-                weiter = False
+                goon = False
                 break
             if not c in AllChars:
                 print"*** Fehler: Geben Sie nur a-z, A-Z, 0-9 ein! ***\n"
-                weiter = False
+                goon = False
                 break
             i += 1
         outputfile = open('/etc/hostname', 'w')
@@ -134,11 +134,11 @@ def fixname():
     os.system("hostname -b {0}".format(fix))
 
 def androidname_command():
-    laenge = 16
+    length = 16
     lowercase = string.ascii_lowercase
     androidchars = Numbers+lowercase
     finalname = 'android-'
-    for i in range(laenge):
+    for i in range(length):
         finalname += random.choice(androidchars)
     return finalname
 
