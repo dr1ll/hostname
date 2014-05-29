@@ -25,7 +25,7 @@ import string
 
 # vars
 
-version = "0.1.27"
+version = "0.1.28"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -201,7 +201,6 @@ print"Hostname     aktuell:", HostName
 print"Hostname nach Reboot:", SysName
 
 
-'''
 def nameload_command():
     inputfile = open('/etc/hostname', 'r')
     loadname = inputfile.read()
@@ -316,4 +315,3 @@ if __name__ == '__main__':
     setname_command()
     savename_command()
     end()
-    '''
