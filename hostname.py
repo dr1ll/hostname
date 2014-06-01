@@ -24,7 +24,7 @@ import commandeer
 
 # vars
 
-version = "0.1.32"
+version = "0.1.33"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -76,8 +76,7 @@ def ownname():
     goon = False
     own = ''
     while goon == False:
-        print"\n4: Input your own hostname \n"
-        print"(Only A-Z / a-z / 0-9)"
+        print"\n4: Input your own hostname (only A-Z / a-z / 0-9):\n"
         goon = True
         own = raw_input("\n>>> ")
         i = 1
@@ -97,8 +96,7 @@ def ownname():
 def replacename():
     goon = False
     while goon == False:
-        print"\n5: Input a hostname for storing:\n"
-        print"(Only A-Z / a-z / 0-9)"
+        print"\n5: Input a hostname for storing (only A-Z / a-z / 0-9):\n"
         goon = True
         newname = raw_input("\n>>> ")
         i = 1
@@ -143,7 +141,7 @@ def androidname_command():
 
 
 def help_command():
-    print('Help is still empyty ')
+    print('\nHelp-Function is empyty!')
     pass
 
 
@@ -154,7 +152,7 @@ def setname(toset):
 def start_command():
     os.system("clear")
     print"+++++++++++++++++++++++ hostname.py for Linux V",version,"++++++++++++++++++++++++\n"
-    print"Please execute as \"ROOT\" !"
+    print"Please execute as \"ROOT\"! Reboot lets changes take effect!"
     print
     print"Hostname is now actual: ", HostName
     print"Hostname  after reboot: ", StoredName
@@ -196,7 +194,7 @@ def start_command():
         goon = False
         while goon == False:
             goon = True
-            answer = raw_input("\nStore this for next reboot (Y/n)?\n\n>>> ")
+            answer = raw_input("\nStore this choice for next reboot (Y/n)?\n\n>>> ")
             if answer == "Y" or answer == "y" or answer == "":
                 outputfile = open('/etc/hostname', 'w')
                 outputfile.write(nametoset)
@@ -217,7 +215,7 @@ def end_command():
     print"Hostname before:", OldName
     print"Hostname actual:", HostName
     print"Hostname reboot:", SysName
-    print"\n+++ done +++\n"
+    print"\n>>> done\n"
 
 
 if __name__ == '__main__':
