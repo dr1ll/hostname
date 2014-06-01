@@ -2,13 +2,12 @@
 #-*- coding: utf-8 -*-
 
 ###########################################
-# RandomHostname.py
-# Erstellt fuer Linux unter Python 2.7.3
-# Das Programm setzt den Netzwerknamen
-# - nach eigener manueller Eingabe
-# - aus der Wordlist '~/.HostnameWordlist'
-# - aus der Systemdatei /etc/hostname
-# - zufaellig (3-12 random characters)
+# - hostname.py -
+# For Linux / Python 2.7.3
+# - setting a hostname
+# - different modes
+# - wordlist-path: '~/.HostnameWordlist'
+# - OS-file: /etc/hostname
 ###########################################
 
 __author__ = "dr1ll"
@@ -25,7 +24,7 @@ import commandeer
 
 # vars
 
-version = "0.1.30"
+version = "0.1.32"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -38,7 +37,7 @@ nametoset = ''
 Script_Dir = os.path.dirname(__file__)
 Hostnamelist_Filename = ".HostnameWordlist"
 Hostnamelist_Path = os.path.join(Script_Dir, Hostnamelist_Filename)
-
+goon = False
 
 # defs
 
@@ -77,18 +76,18 @@ def ownname():
     goon = False
     own = ''
     while goon == False:
-        print"\n4: Hostnamen nun manuell eingeben \n"
-        print"(Groß- Kleinschrift Zahl | keine Leer- und Sonderzeichen)"
-        weiter = True
-        own = raw_input("\nEingabe >>> ")
+        print"\n4: Input your own hostname \n"
+        print"(Only A-Z / a-z / 0-9)"
+        goon = True
+        own = raw_input("\n>>> ")
         i = 1
         for c in own:
             if not c in Ascii and i == 1:
-                print"*** Fehler: ERSTER Buchstabe immer nur a-z oder A-Z! ***\n"
+                print"*** First Character should be a-z or A-Z! ***\n"
                 goon = False
                 break
             if not c in AllChars:
-                print"*** Fehler: Geben Sie nur a-z, A-Z, 0-9 ein! ***\n"
+                print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
                 goon = False
                 break
             i += 1
@@ -98,18 +97,18 @@ def ownname():
 def replacename():
     goon = False
     while goon == False:
-        print"\n5: Permanenten Hostnamen nun manuell eingeben \n"
-        print"(Groß/Kleinschrift/Zahl - keine Leer/Sonderzeichen)"
+        print"\n5: Input a hostname for storing:\n"
+        print"(Only A-Z / a-z / 0-9)"
         goon = True
-        newname = raw_input("\nEingabe >>> ")
+        newname = raw_input("\n>>> ")
         i = 1
         for c in newname:
             if not c in Ascii and i == 1:
-                print"*** Fehler: ERSTER Buchstabe immer nur a-z oder A-Z! ***\n"
+                print"*** First Character should be a-z or A-Z! ***\n"
                 goon = False
                 break
             if not c in AllChars:
-                print"*** Fehler: Geben Sie nur a-z, A-Z, 0-9 ein! ***\n"
+                print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
                 goon = False
                 break
             i += 1
@@ -130,7 +129,7 @@ def fixname():
     inputfile = open('/etc/hostname', 'r')
     fix = inputfile.read()
     inputfile.close()
-    print"Folgender Hostname wird dauerhaft gespeichert: "+fix
+    print"This hostname is stored permanently: "+fix
     os.system("hostname -b {0}".format(fix))
 
 def androidname_command():
@@ -143,31 +142,35 @@ def androidname_command():
     return finalname
 
 
+def help_command():
+    print('Help is still empyty ')
+    pass
+
+
 def setname(toset):
     os.system("hostname -b {0}".format(toset))
 
 
 def start_command():
     os.system("clear")
-    print"+++++++++++++++++++++++++ Linux-Hostnamen setzen ++++++++++++++++++++++++++++"
-    print"Please execute as \"ROOT\"", "                                            v", version
+    print"+++++++++++++++++++++++ hostname.py for Linux V",version,"++++++++++++++++++++++++\n"
+    print"Please execute as \"ROOT\" !"
     print
-    print"Aktueller Hostname: ", HostName
-    print"Hostname n. Reboot: ", StoredName
+    print"Hostname is now actual: ", HostName
+    print"Hostname  after reboot: ", StoredName
     print
-    print("Für das Setzen eines Netzwerknamens stehen folgende Aktionen zur Verfügung:\n")
-    print("1 - Temporären Zufalls-Hostnamen setzen lassen")
-    print("2 - Temporären Hostnamen aus Namensliste setzen lassen")
-    print("3 - Temporären Hostnamen aus Namensliste mit Modifikation setzen lassen")
-    print("4 - Temporären Hostnamen selbst eingeben")
-    print("5 - Permanenten Hostnamen in das System eingeben")
-    print("6 - Aktuellen Hostnamen nur in Datei dauerhaft speichern")
-    print("7 - Vormals gespeicherten Hostnamen reaktivieren (aus Datei resetten)")
-    print("8 - Android-Hostnamen setzen")
+    print("Choose an option:\n")
+    print("1 - Set an actual hostname randomly")
+    print("2 - Set an actual hostname from a wordlist")
+    print("3 - Set an actual hostname form a wordlist with modifications")
+    print("4 - Set an Android-hostname")
+    print("5 - Set an actual hostname yourself")
+    print("6 - Set a permanent hostname")
+    print("7 - Store the actual hostname permanently")
+    print("8 - Reset a stored hostname from the OS-file")
+    print("9 - Help")
     print
-    print"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-    print
-    choice = str(raw_input("Geben Sie die Zahl der gewünschten Aktion (1-8) ein >>> "))
+    choice = str(raw_input("Your choice (1-9):\n\n>>> "))
 
     if choice == "1":
         nametoset = randomname()
@@ -176,30 +179,32 @@ def start_command():
     elif choice == "3":
         nametoset = combinename()
     elif choice == "4":
-        nametoset = ownname()
+        nametoset = androidname_command()
     elif choice == "5":
-        replacename()
+        nametoset = ownname()
     elif choice == "6":
-        filename()
+        replacename()
     elif choice == "7":
+        filename()
+    elif choice == "8":
         fixname()
     else:
-        nametoset = androidname_command()
+        help_command()
 
     if choice == "1" or choice == "2" or choice == "3" or choice == "4" or choice == "8":
         setname(nametoset)
-        weiter = False
-        while weiter == False:
-            weiter = True
-            answer = raw_input("\nAktuellen Hostnamen dauerhaft abspeichern (J/n)? >>> ")
-            if answer == "J" or answer == "j":
+        goon = False
+        while goon == False:
+            goon = True
+            answer = raw_input("\nStore this for next reboot (Y/n)?\n\n>>> ")
+            if answer == "Y" or answer == "y" or answer == "":
                 outputfile = open('/etc/hostname', 'w')
                 outputfile.write(nametoset)
                 outputfile.close()
-            elif answer == "n" or answer == "N":
+            elif answer == "N" or answer == "n":
                 pass
             else:
-                weiter = False
+                goon = False
 
 
 def end_command():
@@ -209,9 +214,10 @@ def end_command():
     HostName = socket.gethostname()
 
     print
-    print"Hostname      vorher:", OldName
-    print"Hostname     aktuell:", HostName
-    print"Hostname nach Reboot:", SysName
+    print"Hostname before:", OldName
+    print"Hostname actual:", HostName
+    print"Hostname reboot:", SysName
+    print"\n+++ done +++\n"
 
 
 if __name__ == '__main__':
