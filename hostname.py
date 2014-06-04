@@ -24,30 +24,36 @@ import commandeer
 
 # vars
 
-version = "0.1.33"
+version = "0.1.34"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
 OldName = socket.gethostname()
 HostName = socket.gethostname()
-inputfile = open('/etc/hostname', 'r')
-StoredName = inputfile.read()
-inputfile.close()
+InputFile = open('/etc/hostname', 'r')
+StoredName = InputFile.read()
+InputFile.close()
 nametoset = ''
 Script_Dir = os.path.dirname(__file__)
 Hostnamelist_Filename = ".HostnameWordlist"
 Hostnamelist_Path = os.path.join(Script_Dir, Hostnamelist_Filename)
 goon = False
 
+
 # defs
 
 
 def makenamelist():
-    inputfile = open(Hostnamelist_Path, 'r')
-    listtext = inputfile.read()
-    inputfile.close()
+    InputFile = open(Hostnamelist_Path, 'r')
+    listtext = InputFile.read()
+    InputFile.close()
     listarray = listtext.split("\n")
     return listarray
+
+
+def choiceinput():
+    answer = str(raw_input("Your choice (1-9):\n\n>>> "))
+    return answer
 
 
 def randomname():
@@ -76,7 +82,7 @@ def ownname():
     goon = False
     own = ''
     while goon == False:
-        print"\n4: Input your own hostname (only A-Z / a-z / 0-9):\n"
+        print"\n5: Input your own hostname (only A-Z / a-z / 0-9):\n"
         goon = True
         own = raw_input("\n>>> ")
         i = 1
@@ -96,7 +102,7 @@ def ownname():
 def replacename():
     goon = False
     while goon == False:
-        print"\n5: Input a hostname for storing (only A-Z / a-z / 0-9):\n"
+        print"\n6: Input a hostname for storing (only A-Z / a-z / 0-9):\n"
         goon = True
         newname = raw_input("\n>>> ")
         i = 1
@@ -108,11 +114,11 @@ def replacename():
             if not c in AllChars:
                 print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
                 goon = False
-                break
+                brea
             i += 1
-        outputfile = open('/etc/hostname', 'w')
-        outputfile.write(newname)
-        outputfile.close()
+    outputfile = open('/etc/hostname', 'w')
+    outputfile.write(newname)
+    outputfile.close()
     return newname
 
 
@@ -124,11 +130,12 @@ def filename():
 
 
 def fixname():
-    inputfile = open('/etc/hostname', 'r')
-    fix = inputfile.read()
-    inputfile.close()
+    InputFile = open('/etc/hostname', 'r')
+    fix = InputFile.read()
+    InputFile.close()
     print"This hostname is stored permanently: "+fix
     os.system("hostname -b {0}".format(fix))
+
 
 def androidname_command():
     length = 16
@@ -140,8 +147,23 @@ def androidname_command():
     return finalname
 
 
+def showfavourite():
+    print"\nSORRY: This function is empty\n"
+    pass
+
+
+def setfavourite():
+    print"\nSORRY: This function is empty\n"
+    pass
+
+
+def loadfavourite_command():
+    print"\nSORRY: This function is empty\n"
+    pass
+
+
 def help_command():
-    print('\nHelp-Function is empyty!')
+    print"\nSORRY: This function is empty\n"
     pass
 
 
@@ -149,14 +171,18 @@ def setname(toset):
     os.system("hostname -b {0}".format(toset))
 
 
-def start_command():
+def header():
     os.system("clear")
-    print"+++++++++++++++++++++++ hostname.py for Linux V",version,"++++++++++++++++++++++++\n"
+    print"+++++++++++++++++++++++ hostname.py for Linux v"+version,"++++++++++++++++++++++++\n"
     print"Please execute as \"ROOT\"! Reboot lets changes take effect!"
     print
     print"Hostname is now actual: ", HostName
     print"Hostname  after reboot: ", StoredName
     print
+
+
+def start_command():
+    header()
     print("Choose an option:\n")
     print("1 - Set an actual hostname randomly")
     print("2 - Set an actual hostname from a wordlist")
@@ -166,9 +192,10 @@ def start_command():
     print("6 - Set a permanent hostname")
     print("7 - Store the actual hostname permanently")
     print("8 - Reset a stored hostname from the OS-file")
-    print("9 - Help")
+    print("9 - more functions")
     print
-    choice = str(raw_input("Your choice (1-9):\n\n>>> "))
+
+    choice = choiceinput()
 
     if choice == "1":
         nametoset = randomname()
@@ -187,7 +214,7 @@ def start_command():
     elif choice == "8":
         fixname()
     else:
-        help_command()
+        more_command()
 
     if choice == "1" or choice == "2" or choice == "3" or choice == "4" or choice == "8":
         setname(nametoset)
@@ -205,17 +232,60 @@ def start_command():
                 goon = False
 
 
+def more_command():
+    header()
+    print("Choose some more options:\n")
+    print("1 - Show favourite hostnames")
+    print("2 - Set a favourite hostname")
+    print("3 - Load a favourite hostname")
+    print("4 - ")
+    print("5 - ")
+    print("6 - ")
+    print("7 - ")
+    print("8 - Help")
+    print("9 - Go back")
+    print
+
+    choice = choiceinput()
+
+    if choice == "1":
+        showfavourite()
+    elif choice == "2":
+        setfavourite()
+    elif choice == "3":
+        nametoset = loadfavourite_command()
+    elif choice == "8":
+        help_command()
+    else:
+        start_command()
+
+    if choice == "2" or choice == "3" or choice == "4":
+        setname(nametoset)
+        goon = False
+        while goon == False:
+            goon = True
+            answer = raw_input("\nStore this choice for next reboot (Y/n)?\n\n>>> ")
+            if answer == "Y" or answer == "y" or answer == "":
+                outputfile = open('/etc/hostname', 'w')
+                outputfile.write(nametoset)
+                outputfile.close()
+            elif answer == "N" or answer == "n":
+                pass
+            else:
+                goon = False
+
+
 def end_command():
-    inputfile = open('/etc/hostname', 'r')
-    SysName = inputfile.read()
-    inputfile.close()
+    InputFile = open('/etc/hostname', 'r')
+    SysName = InputFile.read()
+    InputFile.close()
     HostName = socket.gethostname()
 
     print
     print"Hostname before:", OldName
     print"Hostname actual:", HostName
     print"Hostname reboot:", SysName
-    print"\n>>> done\n"
+    print"\n>>> done, perhaps you better reboot!?\n"
 
 
 if __name__ == '__main__':
