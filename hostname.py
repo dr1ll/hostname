@@ -20,11 +20,12 @@ import socket
 import random
 import string
 import commandeer
+import time
 
 
 # vars
 
-version = "0.1.35"
+version = "0.1.36"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -37,6 +38,8 @@ nametoset = ''
 Script_Dir = os.path.dirname(__file__)
 Hostnamelist_Filename = ".HostnameWordlist"
 Hostnamelist_Path = os.path.join(Script_Dir, Hostnamelist_Filename)
+Favouritelist_Filename = ".Favouritelist"
+Favouritelist_Path = os.path.join(Script_Dir, Favouritelist_Filename)
 goon = False
 choice = ""
 
@@ -146,7 +149,15 @@ def androidname_command():
 
 def showfavourite():
     print"\nSORRY: This function is empty\n"
-    pass
+    InputFile = open(Favouritelist_Path, 'r')
+    content = InputFile.read()
+    InputFile.close()
+    content = content.split("\n")
+    i = 0
+    for objects in content:
+        print(str(i)+": "+str(objects))
+        i += 1
+    more_command()
 
 
 def setfavourite():
@@ -161,8 +172,8 @@ def loadfavourite_command():
 
 def help_command():
     print"\nSORRY: This function is empty\n"
-    pass
-
+    time.sleep(3)
+    start_command()
 
 def setname(toset):
     os.system("hostname -b {0}".format(toset))
@@ -179,7 +190,7 @@ def header():
 
 def start_command():
     header()
-    print("Choose an option:\n")
+    print("Press [Enter] for more options:\n")
     print("1 - Set an actual hostname randomly")
     print("2 - Set an actual hostname from a wordlist")
     print("3 - Set an actual hostname form a wordlist with modifications")
@@ -188,7 +199,7 @@ def start_command():
     print("6 - Store a new permanent hostname")
     print("7 - Store the actual hostname permanently")
     print("8 - Reset a stored hostname from the OS-file")
-    print("9 - more functions")
+    print("9 - Help")
     print
 
     choice = choiceinput()
@@ -209,6 +220,8 @@ def start_command():
         filename()
     elif choice == "8":
         fixname()
+    elif choice == "9":
+        help_command()
     else:
         more_command()
 
@@ -230,7 +243,7 @@ def start_command():
 
 def more_command():
     header()
-    print("Choose some more options:\n")
+    print("Press [Enter] for more options:\n")
     print("1 - Show favourite hostnames")
     print("2 - Set a favourite hostname")
     print("3 - Load a favourite hostname")
@@ -238,8 +251,8 @@ def more_command():
     print("5 - ")
     print("6 - ")
     print("7 - ")
-    print("8 - Help")
-    print("9 - Go back")
+    print("8 - ")
+    print("9 - Help")
     print
 
     choice = choiceinput()
@@ -251,10 +264,8 @@ def more_command():
         setfavourite()
     elif choice == "3":
         loadfavourite_command()
-    elif choice == "8":
+    elif choice == "9":
         help_command()
-    elif choice == "7":
-        return
     else:
         start_command()
 
