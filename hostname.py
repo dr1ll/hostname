@@ -24,7 +24,7 @@ import commandeer
 
 # vars
 
-version = "0.1.34"
+version = "0.1.35"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -38,7 +38,7 @@ Script_Dir = os.path.dirname(__file__)
 Hostnamelist_Filename = ".HostnameWordlist"
 Hostnamelist_Path = os.path.join(Script_Dir, Hostnamelist_Filename)
 goon = False
-
+choice = ""
 
 # defs
 
@@ -90,11 +90,9 @@ def ownname():
             if not c in Ascii and i == 1:
                 print"*** First Character should be a-z or A-Z! ***\n"
                 goon = False
-                break
             if not c in AllChars:
                 print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
                 goon = False
-                break
             i += 1
     return own
 
@@ -114,7 +112,6 @@ def replacename():
             if not c in AllChars:
                 print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
                 goon = False
-                brea
             i += 1
     outputfile = open('/etc/hostname', 'w')
     outputfile.write(newname)
@@ -133,7 +130,7 @@ def fixname():
     InputFile = open('/etc/hostname', 'r')
     fix = InputFile.read()
     InputFile.close()
-    print"This hostname is stored permanently: "+fix
+    print"\nThis hostname will be resetted: "+fix
     os.system("hostname -b {0}".format(fix))
 
 
@@ -180,7 +177,6 @@ def header():
     print"Hostname  after reboot: ", StoredName
     print
 
-
 def start_command():
     header()
     print("Choose an option:\n")
@@ -188,15 +184,15 @@ def start_command():
     print("2 - Set an actual hostname from a wordlist")
     print("3 - Set an actual hostname form a wordlist with modifications")
     print("4 - Set an Android-hostname")
-    print("5 - Set an actual hostname yourself")
-    print("6 - Set a permanent hostname")
+    print("5 - Set a self-defined actual hostname")
+    print("6 - Store a new permanent hostname")
     print("7 - Store the actual hostname permanently")
     print("8 - Reset a stored hostname from the OS-file")
     print("9 - more functions")
     print
 
     choice = choiceinput()
-
+    nametoset = ""
     if choice == "1":
         nametoset = randomname()
     elif choice == "2":
@@ -216,7 +212,7 @@ def start_command():
     else:
         more_command()
 
-    if choice == "1" or choice == "2" or choice == "3" or choice == "4" or choice == "8":
+    if choice == "1" or choice == "2" or choice == "3" or choice == "4" or choice == "5":
         setname(nametoset)
         goon = False
         while goon == False:
@@ -248,14 +244,17 @@ def more_command():
 
     choice = choiceinput()
 
+
     if choice == "1":
         showfavourite()
     elif choice == "2":
         setfavourite()
     elif choice == "3":
-        nametoset = loadfavourite_command()
+        loadfavourite_command()
     elif choice == "8":
         help_command()
+    elif choice == "7":
+        return
     else:
         start_command()
 
