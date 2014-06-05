@@ -25,7 +25,7 @@ import time
 
 # vars
 
-version = "0.1.36"
+version = "0.1.37"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -148,15 +148,17 @@ def androidname_command():
 
 
 def showfavourite():
-    print"\nSORRY: This function is empty\n"
     InputFile = open(Favouritelist_Path, 'r')
     content = InputFile.read()
     InputFile.close()
     content = content.split("\n")
     i = 0
+    header()
+    print("The Favourites-list:\n")
     for objects in content:
-        print(str(i)+": "+str(objects))
+        print(str(i+1)+" - "+str(objects))
         i += 1
+    time.sleep(5)
     more_command()
 
 
