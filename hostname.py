@@ -20,7 +20,6 @@ import socket
 import random
 import string
 import commandeer
-import time
 
 
 # vars
@@ -46,7 +45,7 @@ choice = ""
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.2.1"
+versionnumber = "0.2.2"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
@@ -170,7 +169,7 @@ def replacename():                               # store a self-defined hostname
             if not c in Ascii and i == 1:
                 print"*** First Character should be a-z or A-Z! ***\n"
                 goon = False
-                break
+                #break
             if not c in AllChars:
                 print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
                 goon = False
@@ -221,7 +220,30 @@ def loadfavourite_command():                        # load a favourite hostname
     pass
 
 def storefavourite_command():
+    answer = 1
+    goon = True
+    while goon:
+        goon = False
+        answer = int(raw_input("\n"+"Storing in which position (1-9)? >>> "))
+        for i in range(1, 10):
+            if answer in range(1, 10):
+                goon = True
+
+
+'''
+    outputfile = open('/etc/hostname', 'w')
+    outputfile.write(newname)
+    outputfile.close()
+    InputFile = open(Favouritelist_Path, 'r')
+    content = InputFile.read()
+    InputFile.close()
+    content = content.split("\n")
+    for objects in content:
+        print(str(i+1)+" - "+str(objects))
+        i += 1
+    i = 0
     print"\nStore a fav: This function is empty\n"
+'''
 
 def setname(toset):                                 # function for setting the hostname
     os.system("hostname -b {0}".format(toset))
@@ -384,12 +406,12 @@ def footer():
     pass
 
 
-#def menue3():
-#   header()
-#   for i in range(10):
-#       print(str(i)+" - "+text_for_functions[i+20])
-#   print
-#   footer()
+#   def menue3():
+#       header()
+#       for i in range(10):
+#           print(str(i)+" - "+text_for_functions[i+20])
+#       print
+#       footer()
 
 
 if __name__ == '__main__':
