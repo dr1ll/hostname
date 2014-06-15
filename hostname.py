@@ -3,11 +3,11 @@
 
 ###########################################
 # - hostname.py -
-# For Linux / Python 2.7.3
+# - For Linux / Python 2.7.3
 # - setting a hostname
 # - different modes
 # - wordlist-path: '~/.HostnameWordlist'
-# - OS-file: /etc/hostname
+# - OS-file: /etc/.hostname
 ###########################################
 
 __author__ = "dr1ll"
@@ -25,7 +25,6 @@ import time
 
 # vars
 
-version = "0.1.37"
 Ascii = string.ascii_letters
 Numbers = string.digits
 AllChars = Ascii+Numbers
@@ -43,8 +42,57 @@ Favouritelist_Path = os.path.join(Script_Dir, Favouritelist_Filename)
 goon = False
 choice = ""
 
-# defs
 
+### Change these vars for your menue:
+
+# Count your versions here:
+versionnumber = "0.2.1"
+
+# How many columns do you have in your window for default (Standard=80)?
+columns = 80
+
+# Name oy your app, this is shown in the first line
+title = "Changing hostname"
+
+# Insert some hints
+hint1 = "Please execute as \"ROOT\"! Reboot lets changes take effect!\n"
+hint2 = "Hostname       before: "+OldName
+hint3 = "Hostname   now actual: "+HostName
+hint4 = "Hostname after reboot: "+StoredName
+hint5 = " "*46+"[Enter]: More options   [Q]: Quit\n"
+
+# Don't change:
+version = " v"+versionnumber
+text_for_functions = ["empty"]
+emptyfunction = "\nThis function is empty"
+
+
+# Here is the header
+
+
+def header():
+    os.system("clear")
+    OldName = socket.gethostname()
+    HostName = socket.gethostname()
+    InputFile = open('/etc/hostname', 'r')
+    StoredName = InputFile.read()
+    InputFile.close()
+    hint1 = "Please execute as \"ROOT\"! Only REBOOT lets some changes take effect!\n"
+    hint2 = "Hostname       before: "+OldName
+    hint3 = "Hostname   now actual: "+HostName
+    hint4 = "Hostname after reboot: "+StoredName
+    hint5 = "\n[1-9]: Choose option   [Enter]: More options   [Q]: Quit   [H]: Help\n"
+    length = int(len(title+version+" "*2))
+    print("+"*(int(columns/2)-int(length/2))+" "+title+version+" "+"+"*(int((columns/2)-1)-int(length/2)))
+    print
+    print(hint1)
+    #print(hint2)
+    print(hint3)
+    print(hint4)
+    print(hint5)
+
+
+### defs from hostname.py
 
 def makenamelist():
     InputFile = open(Hostnamelist_Path, 'r')
@@ -54,12 +102,15 @@ def makenamelist():
     return listarray
 
 
+NameList = makenamelist()
+
+
 def choiceinput():
-    answer = str(raw_input("Your choice (1-9):\n\n>>> "))
+    answer = str(raw_input("\n>>> "))
     return answer
 
 
-def randomname():
+def randomname():                               # returns a random string
     length = random.randint(2, 11)
     finalname = random.choice(Ascii)
     for i in range(length):
@@ -67,12 +118,12 @@ def randomname():
     return finalname
 
 
-def listname():
+def listname():                                 # returns a random wordstring from your list
     tmp = random.choice(NameList)
     return tmp
 
 
-def combinename():
+def combinename():                              # returns a randomly modified wordstring
     length = random.randint(3, 7)
     numbers = string.digits
     finalname = random.choice(NameList)
@@ -81,13 +132,22 @@ def combinename():
     return finalname
 
 
-def ownname():
+def androidname_command():                           # returns an android hostname
+    length = 16
+    lowercase = string.ascii_lowercase
+    androidchars = Numbers+lowercase
+    finalname = 'android-'
+    for i in range(length):
+        finalname += random.choice(androidchars)
+    return finalname
+
+
+def ownname():                                  # returns of a self-defined string
     goon = False
     own = ''
     while goon == False:
-        print"\n5: Input your own hostname (only A-Z / a-z / 0-9):\n"
         goon = True
-        own = raw_input("\n>>> ")
+        own = raw_input("\nNow Input your own hostname (only A-Z / a-z / 0-9) >>> ")
         i = 1
         for c in own:
             if not c in Ascii and i == 1:
@@ -100,12 +160,11 @@ def ownname():
     return own
 
 
-def replacename():
+def replacename():                               # store a self-defined hostname
     goon = False
     while goon == False:
-        print"\n6: Input a hostname for storing (only A-Z / a-z / 0-9):\n"
         goon = True
-        newname = raw_input("\n>>> ")
+        newname = raw_input("\nNow Input a hostname for storing (only A-Z / a-z / 0-9) >>> ")
         i = 1
         for c in newname:
             if not c in Ascii and i == 1:
@@ -122,186 +181,262 @@ def replacename():
     return newname
 
 
-def filename():
+def filename():                                     # stores the existing hostname for reboot
     actualname = socket.gethostname()
     outputfile = open('/etc/hostname', 'w')
     outputfile.write(actualname)
     outputfile.close()
 
 
-def fixname():
+def fixname():                                       # reset the already stored hostname
     InputFile = open('/etc/hostname', 'r')
     fix = InputFile.read()
     InputFile.close()
-    print"\nThis hostname will be resetted: "+fix
+    # print"\nThis hostname will be resetted: "+fix
     os.system("hostname -b {0}".format(fix))
 
 
-def androidname_command():
-    length = 16
-    lowercase = string.ascii_lowercase
-    androidchars = Numbers+lowercase
-    finalname = 'android-'
-    for i in range(length):
-        finalname += random.choice(androidchars)
-    return finalname
+def help_command():                                 # call the help-function
+    print"SORRY, help is empty"
 
 
-def showfavourite():
+def showfavourite():                                 # showes a favourites-list
     InputFile = open(Favouritelist_Path, 'r')
     content = InputFile.read()
     InputFile.close()
     content = content.split("\n")
     i = 0
     header()
-    print("The Favourites-list:\n")
     for objects in content:
         print(str(i+1)+" - "+str(objects))
         i += 1
-    time.sleep(5)
-    more_command()
 
 
-def setfavourite():
-    print"\nSORRY: This function is empty\n"
+def setfavourite():                                  # sets a fav-hostname
+    print"\nSet a fav: This function is empty"
+
+
+def loadfavourite_command():                        # load a favourite hostname
+    print"\nLoad a fav: This function is empty\n"
     pass
 
+def storefavourite_command():
+    print"\nStore a fav: This function is empty\n"
 
-def loadfavourite_command():
-    print"\nSORRY: This function is empty\n"
-    pass
-
-
-def help_command():
-    print"\nSORRY: This function is empty\n"
-    time.sleep(3)
-    start_command()
-
-def setname(toset):
+def setname(toset):                                 # function for setting the hostname
     os.system("hostname -b {0}".format(toset))
 
 
-def header():
-    os.system("clear")
-    print"+++++++++++++++++++++++ hostname.py for Linux v"+version,"++++++++++++++++++++++++\n"
-    print"Please execute as \"ROOT\"! Reboot lets changes take effect!"
-    print
-    print"Hostname is now actual: ", HostName
-    print"Hostname  after reboot: ", StoredName
-    print
+### Inserting your functionality:
 
-def start_command():
+# Insert: to os.system('[name of your intern def/function etc. or execute somescript.py]')
+# Insert: text_for_functions.append("[String to decribe your function etc.]")
+# Remove: print(emptyfunction)
+
+def function1():
+    nametoset = randomname()
+    setname(nametoset)
+
+text_for_functions.append("Set an actualized hostname randomly")
+
+
+def function2():
+    nametoset = listname()
+    setname(nametoset)
+
+
+text_for_functions.append("Set an actualized hostname from a wordlist")
+
+
+def function3():
+    nametoset = combinename()
+    setname(nametoset)
+
+text_for_functions.append("Set an actualized hostname from a wordlist with modification")
+
+
+def function4():
+    nametoset = androidname_command()
+    setname(nametoset)
+
+
+text_for_functions.append("Set an actualized hostname from an Android-device")
+
+
+def function5():
+    nametoset = ownname()
+    setname(nametoset)
+
+
+text_for_functions.append("Set an actualized hostname yourself")
+
+
+def function6():
+    filename()
+
+text_for_functions.append("Store the actualized hostname permanently")
+
+
+def function7():
+    replacename()
+
+
+text_for_functions.append("Store a new self-defined hostname permanently")
+
+
+def function8():
+    fixname()
+
+
+text_for_functions.append("Reset a stored hostname from the OS-file")
+
+
+def function9():
+    pass
+
+
+text_for_functions.append("")
+
+
+def function10():
+    showfavourite()
+    print("\nThis is the list of your favourite hostnames!")
+
+
+text_for_functions.append("Show favourite hostnames")
+
+
+def function11():
+    showfavourite()
+    setfavourite()
+
+
+text_for_functions.append("Set a favourite hostname")
+
+
+def function12():
+    showfavourite()
+    loadfavourite_command()
+
+
+text_for_functions.append("Load a favourite hostname")
+
+
+def function13():
+    showfavourite()
+    storefavourite_command()
+
+
+text_for_functions.append("Store actual hostname as favourite")
+
+
+def function14():
+    pass
+
+
+text_for_functions.append("")
+
+
+def function15():
+    pass
+
+
+text_for_functions.append("")
+
+
+def function16():
+    pass
+
+
+text_for_functions.append("")
+
+
+def function17():
+    pass
+
+
+text_for_functions.append("")
+
+
+def function18():
+    print(emptyfunction)
+
+
+text_for_functions.append("")
+
+
+#!!! STOP inserting stuff here !!!
+
+def menue1():
     header()
-    print("Press [Enter] for more options:\n")
-    print("1 - Set an actual hostname randomly")
-    print("2 - Set an actual hostname from a wordlist")
-    print("3 - Set an actual hostname form a wordlist with modifications")
-    print("4 - Set an Android-hostname")
-    print("5 - Set a self-defined actual hostname")
-    print("6 - Store a new permanent hostname")
-    print("7 - Store the actual hostname permanently")
-    print("8 - Reset a stored hostname from the OS-file")
-    print("9 - Help")
-    print
+    for i in range(1, 10):
+        print(str(i)+" - "+text_for_functions[i])
+    #print
 
-    choice = choiceinput()
-    nametoset = ""
-    if choice == "1":
-        nametoset = randomname()
-    elif choice == "2":
-        nametoset = listname()
-    elif choice == "3":
-        nametoset = combinename()
-    elif choice == "4":
-        nametoset = androidname_command()
-    elif choice == "5":
-        nametoset = ownname()
-    elif choice == "6":
-        replacename()
-    elif choice == "7":
-        filename()
-    elif choice == "8":
-        fixname()
-    elif choice == "9":
-        help_command()
-    else:
-        more_command()
-
-    if choice == "1" or choice == "2" or choice == "3" or choice == "4" or choice == "5":
-        setname(nametoset)
-        goon = False
-        while goon == False:
-            goon = True
-            answer = raw_input("\nStore this choice for next reboot (Y/n)?\n\n>>> ")
-            if answer == "Y" or answer == "y" or answer == "":
-                outputfile = open('/etc/hostname', 'w')
-                outputfile.write(nametoset)
-                outputfile.close()
-            elif answer == "N" or answer == "n":
-                pass
-            else:
-                goon = False
-
-
-def more_command():
+def menue2():
     header()
-    print("Press [Enter] for more options:\n")
-    print("1 - Show favourite hostnames")
-    print("2 - Set a favourite hostname")
-    print("3 - Load a favourite hostname")
-    print("4 - ")
-    print("5 - ")
-    print("6 - ")
-    print("7 - ")
-    print("8 - ")
-    print("9 - Help")
-    print
-
-    choice = choiceinput()
+    for i in range(1, 10):
+        print(str(i)+" - "+text_for_functions[i+9])
+    #print
 
 
-    if choice == "1":
-        showfavourite()
-    elif choice == "2":
-        setfavourite()
-    elif choice == "3":
-        loadfavourite_command()
-    elif choice == "9":
-        help_command()
-    else:
-        start_command()
-
-    if choice == "2" or choice == "3" or choice == "4":
-        setname(nametoset)
-        goon = False
-        while goon == False:
-            goon = True
-            answer = raw_input("\nStore this choice for next reboot (Y/n)?\n\n>>> ")
-            if answer == "Y" or answer == "y" or answer == "":
-                outputfile = open('/etc/hostname', 'w')
-                outputfile.write(nametoset)
-                outputfile.close()
-            elif answer == "N" or answer == "n":
-                pass
-            else:
-                goon = False
+def footer():
+    pass
 
 
-def end_command():
-    InputFile = open('/etc/hostname', 'r')
-    SysName = InputFile.read()
-    InputFile.close()
-    HostName = socket.gethostname()
-
-    print
-    print"Hostname before:", OldName
-    print"Hostname actual:", HostName
-    print"Hostname reboot:", SysName
-    print"\n>>> done, perhaps you better reboot!?\n"
+#def menue3():
+#   header()
+#   for i in range(10):
+#       print(str(i)+" - "+text_for_functions[i+20])
+#   print
+#   footer()
 
 
 if __name__ == '__main__':
     commandeer.cli()
-    NameList = makenamelist()
-    start_command()
-    end_command()
+    goon = True
+    which_menue = 1
+    counter = 0
+    while goon:
+        if counter > 0:
+            raw_input("\nPress Enter to continue!")
+        counter += 1
+        HostName = socket.gethostname()
+        InputFile = open('/etc/hostname', 'r')
+        StoredName = InputFile.read()
+        InputFile.close()
+        if which_menue == 1:
+            menue1()
+        elif which_menue == 2:
+            menue2()
+#       elif which_menue == 3:
+#           menue3()
+        menue_counter = int((which_menue*9)-9)
+        choice = choiceinput()
+        choices = range(1, 9)
+        choice_control = 999
+        if choice == "1" or choice == "2" or choice == "3" or choice == "4":
+            choice_control = int(choice)
+        if choice == "5" or choice == "6" or choice == "7" or choice == "8" or choice == "9":
+            choice_control = int(choice)
+        if choice_control in range(9):
+            function_string = 'function'+str(choice_control+menue_counter)
+            locals()[function_string]()
+        if choice == "Q" or choice == "q":
+            goon = False
+        if choice == "H" or choice == "h":
+            help_command()
+        elif choice == "":
+            if which_menue == 1:
+                which_menue = 2
+            elif which_menue == 2:
+                which_menue = 1
+#           elif which_menue == 3:
+#               which_menue = 1
+            counter = 0
+    os.system('clear')
+    header()
+    for i in range (11):
+        print""
+    print(">>> end\n")
+# end
