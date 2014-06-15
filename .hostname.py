@@ -40,12 +40,13 @@ Favouritelist_Filename = ".Favouritelist"
 Favouritelist_Path = os.path.join(Script_Dir, Favouritelist_Filename)
 goon = False
 choice = ""
+content = []
 
 
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.2.2"
+versionnumber = "0.2.3"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
@@ -77,7 +78,7 @@ def header():
     StoredName = InputFile.read()
     InputFile.close()
     hint1 = "Please execute as \"ROOT\"! Only REBOOT lets some changes take effect!\n"
-    hint2 = "Hostname       before: "+OldName
+    #hint2 = "Hostname       before: "+OldName
     hint3 = "Hostname   now actual: "+HostName
     hint4 = "Hostname after reboot: "+StoredName
     hint5 = "\n[1-9]: Choose option   [Enter]: More options   [Q]: Quit   [H]: Help\n"
@@ -204,15 +205,49 @@ def showfavourite():                                 # showes a favourites-list
     content = InputFile.read()
     InputFile.close()
     content = content.split("\n")
-    i = 0
     header()
-    for objects in content:
-        print(str(i+1)+" - "+str(objects))
-        i += 1
+    for i in range(9):
+        if i < len(content):
+            print(str(i+1)+" - "+content[i])
+        else:
+            print(str(i+1)+" -")
 
 
 def setfavourite():                                  # sets a fav-hostname
-    print"\nSet a fav: This function is empty"
+    InputFile = open(Favouritelist_Path, 'r')
+    content = InputFile.read()
+    InputFile.close()
+    content = content.split("\n")
+    goon = True
+    while goon:
+        goon = False
+        answer = raw_input("\nWhich position for your new fav (1-9)? >>> ")
+        for i in range(1, 10):
+            if answer in range(1, 10):
+                goon = True
+    # testing:
+    #answer = int(answer)
+    goon = False
+    while goon == False:
+        goon = True
+        favname = raw_input("\nNow Input a favourite hostname for storing >>> ")
+        i = 1
+        for c in favname:
+            if not c in Ascii and i == 1:
+                print"*** First Character should be a-z or A-Z! ***\n"
+                goon = False
+                #break
+            if not c in AllChars:
+                print"*** Please use only a-z, A-Z, 0-9 ! ***\n"
+                goon = False
+            i += 1
+    answer = int(answer)-1
+    content[answer] = favname
+    outputfile = open(Favouritelist_Path, 'w')
+    i = 0
+    for i in range(9):
+        outputfile.write(content[i]+"\n")
+    outputfile.close()
 
 
 def loadfavourite_command():                        # load a favourite hostname
@@ -229,21 +264,6 @@ def storefavourite_command():
             if answer in range(1, 10):
                 goon = True
 
-
-'''
-    outputfile = open('/etc/hostname', 'w')
-    outputfile.write(newname)
-    outputfile.close()
-    InputFile = open(Favouritelist_Path, 'r')
-    content = InputFile.read()
-    InputFile.close()
-    content = content.split("\n")
-    for objects in content:
-        print(str(i+1)+" - "+str(objects))
-        i += 1
-    i = 0
-    print"\nStore a fav: This function is empty\n"
-'''
 
 def setname(toset):                                 # function for setting the hostname
     os.system("hostname -b {0}".format(toset))
