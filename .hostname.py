@@ -42,18 +42,18 @@ content = []
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.2.4"
+versionnumber = "0.2.5"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
 
-# Name oy your app, this is shown in the first line
+# Name of your app, this is shown in the first line
 title = "Changing hostname"
 
 # Insert hints for header
 hint1 = "Please execute as \"ROOT\"! Only REBOOT lets some changes take effect!\n"
 hint2 = ""
-hint3 = "Hostname   now actual: "
+hint3 = "Hostname  now  actual: "
 hint4 = "Hostname after reboot: "
 hint5 = "\n[1-9]: Choose option   [Enter]: More options   [Q]: Quit   [H]: Help\n"
 
@@ -83,6 +83,10 @@ stored = Refresh.StoredName
 def header():
     os.system("clear")
     length = int(len(title+version+" "*2))
+    host = socket.gethostname()             # WHY DOES CLASS REFRESH NOT WORK HERE ???
+    InputFile = open('/etc/hostname', 'r')
+    stored = InputFile.read()
+    InputFile.close()
     print("+"*(int(columns/2)-int(length/2))+" "+title+version+" "+"+"*(int((columns/2)-1)-int(length/2)))
     print
     print(hint1)
@@ -115,6 +119,7 @@ def randomname():                               # returns a random string
     finalname = random.choice(Ascii)
     for i in range(length):
         finalname += random.choice(AllChars)
+    print(finalname)
     return finalname
 
 
@@ -183,7 +188,7 @@ def replacename():                               # store a self-defined hostname
 
 def filename():                                     # stores the existing hostname for reboot
     outputfile = open('/etc/hostname', 'w')
-    outputfile.write(host)
+    outputfile.write(socket.gethostname())
     outputfile.close()
 
 
@@ -191,7 +196,6 @@ def fixname():                                       # reset the already stored 
     InputFile = open('/etc/hostname', 'r')
     fix = InputFile.read()
     InputFile.close()
-    # print"\nThis hostname will be resetted: "+fix
     os.system("hostname -b {0}".format(fix))
 
 
@@ -253,25 +257,25 @@ def setfavourite():                                  # sets a fav-hostname
 def loadfavourite_command():                        # load a favourite hostname
     goon = True
     while goon:
-        answer = raw_input("\nWhich hostname to load (1-9)? >>> ")
+        answer = raw_input("\nWhich hostname do U want to load (1-9)? >>> ")
         goon = False
         for i in range(1, 10):
-            if answer not in (string.digits) or answer == "0" or answer == "":
+            if answer == "0":
+                goon = True
+            elif answer == "":
+                goon = True
+            elif answer not in (string.digits):
                 goon = True
     InputFile = open(Favouritelist_Path, 'r')
     content = InputFile.read()
     InputFile.close()
     content = content.split("\n")
-    answer = int(answer)
+    answer = int(answer)-1
     load = content[answer]
     return(load)
 
 
-def storefavourite_command():						# store a favourite hostname
-    InputFile = open(Favouritelist_Path, 'r')
-    content = InputFile.read()
-    InputFile.close()
-    content = content.split("\n")
+def storefavourite_command():                       # store a favourite hostname
     goon = True
     while goon:
         answer = raw_input("\nWhich position for your new favourite (1-9)? >>> ")
@@ -279,6 +283,19 @@ def storefavourite_command():						# store a favourite hostname
         for i in range(1, 10):
             if answer not in (string.digits) or answer == "0" or answer == "":
                 goon = True
+    InputFile = open(Favouritelist_Path, 'r')
+    content = InputFile.read()
+    InputFile.close()
+    content = content.split("\n")
+    content[int(answer)-1] = socket.gethostname()
+    outputfile = open(Favouritelist_Path, 'w')
+    i = 0
+    for i in range(9):
+        if i != int(answer):
+            outputfile.write(content[i]+"\n")
+        elif i == int(answer):
+            outputfile.write(content[int(answer)]+"\n")
+    outputfile.close()
 
 
 def setname(toset):                                 # function for setting the hostname
@@ -339,7 +356,7 @@ def function7():
     replacename()
 
 
-text_for_functions.append("Store a new self-defined hostname permanently")
+text_for_functions.append("Set & Store a new self-defined hostname permanently")
 
 
 def function8():
@@ -367,14 +384,14 @@ text_for_functions.append("Show the list of favourite hostnames")
 def function11():
     showfavourite()
     setfavourite()
-
+    showfavourite()
 
 text_for_functions.append("Set a favourite hostname manually")
 
 
 def function12():
     showfavourite()
-    loadfavourite_command()
+    nametoset = loadfavourite_command()
     setname(nametoset)
 
 
@@ -384,7 +401,7 @@ text_for_functions.append("Load a favourite hostname from the list")
 def function13():
     showfavourite()
     storefavourite_command()
-
+    showfavourite()
 
 text_for_functions.append("Store actual hostname as favourite in the list")
 
@@ -418,10 +435,10 @@ text_for_functions.append("")
 
 
 def function18():
-    print(emptyfunction)
+    pass
 
 
-text_for_functions.append("empty")
+text_for_functions.append("")
 
 
 #!!! STOP inserting stuff here !!!
