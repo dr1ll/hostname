@@ -1,16 +1,26 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-######################################################
-#   Changing hostname - hostname.py
-# - tested for:
-#   Python 2.7.3
-#   Debian Wheezy
-# - setting a hostname
-# - different modes
-# - wordlist-path: '~/.HostnameWordlist'
-# - favouritelist-path: '~/.Favouritelist'
-# - OS-file: /etc/.hostname (replacing: .nodename)
+#######################################################
+#   Changing hostname - hostname.py                   #
+#                                                     #
+# - tested for:                                       #
+#   Python 2.7.3                                      #
+#   Debian Wheezy                                     #
+#                                                     #
+# - made with:                                        #
+#   menue_template.py                                 #     
+#                                                     #
+# - setting a hostname                                #
+# - different modes                                   #
+#                                                     #
+# - working directory: '~/.hostname.py'               #
+# - wordlist-path: '~/.HostnameWordlist'              #
+# - favouritelist-path: '~/.Favouritelist'            #
+# - OS-file: /etc/.hostname (replacing: .nodename)    #
+#                                                     #
+#           ***   REBOOT IS IMPORTANT   ***           # 
+#                                                     #
 #######################################################
 
 __author__ = "dr1ll"
@@ -45,7 +55,7 @@ content = []
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.3.0"
+versionnumber = "0.3.1"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
