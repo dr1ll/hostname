@@ -1,14 +1,17 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-###########################################
-# - hostname.py -
-# - For Linux / Python 2.7.3
+######################################################
+#   Changing hostname - hostname.py
+# - tested for:
+#   Python 2.7.3
+#   Debian Wheezy
 # - setting a hostname
 # - different modes
 # - wordlist-path: '~/.HostnameWordlist'
-# - OS-file: /etc/.hostname
-###########################################
+# - favouritelist-path: '~/.Favouritelist'
+# - OS-file: /etc/.hostname (replacing: .nodename)
+#######################################################
 
 __author__ = "dr1ll"
 __copyright__ = "GPL 2013"
@@ -20,7 +23,6 @@ import socket
 import random
 import string
 import commandeer
-import time
 
 
 # vars
@@ -34,6 +36,7 @@ Hostnamelist_Path = os.path.join(Script_Dir, Hostnamelist_Filename)
 Favouritelist_Filename = ".Favouritelist"
 Favouritelist_Path = os.path.join(Script_Dir, Favouritelist_Filename)
 goon = False
+reboot = False
 choice = ""
 nametoset = ""
 content = []
@@ -42,7 +45,7 @@ content = []
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.2.5"
+versionnumber = "0.3.0"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
@@ -83,7 +86,7 @@ stored = Refresh.StoredName
 def header():
     os.system("clear")
     length = int(len(title+version+" "*2))
-    host = socket.gethostname()             # WHY DOES CLASS REFRESH NOT WORK HERE ???
+    host = socket.gethostname()                                 # WHY DOES CLASS REFRESH NOT WORK HERE ???
     InputFile = open('/etc/hostname', 'r')
     stored = InputFile.read()
     InputFile.close()
@@ -119,7 +122,7 @@ def randomname():                               # returns a random string
     finalname = random.choice(Ascii)
     for i in range(length):
         finalname += random.choice(AllChars)
-    print(finalname)
+    reboot = True
     return finalname
 
 
@@ -251,9 +254,6 @@ def setfavourite():                                  # sets a fav-hostname
     outputfile.close()
 
 
-### HIER weitermachen !!!
-
-
 def loadfavourite_command():                        # load a favourite hostname
     goon = True
     while goon:
@@ -298,7 +298,26 @@ def storefavourite_command():                       # store a favourite hostname
     outputfile.close()
 
 
-def setname(toset):                                 # function for setting the hostname
+def randomfav():
+    ranfav = ""
+    goon = True
+    host = socket.gethostname()
+    while goon:
+        finalname_int = random.randint(1, 9)
+        InputFile = open(Favouritelist_Path, 'r')
+        content = InputFile.read()
+        InputFile.close()
+        content = content.split("\n")
+        ranfav = content[finalname_int-1]
+        if host == ranfav:
+            goon = True
+        else:
+            goon = False
+    return ranfav
+
+
+def setname(toset):   
+    reboot = True                                  # function for setting the hostname
     os.system("hostname -b {0}".format(toset))
 
 
@@ -383,13 +402,23 @@ text_for_functions.append("Show the list of favourite hostnames")
 
 def function11():
     showfavourite()
-    setfavourite()
+    storefavourite_command()
     showfavourite()
 
-text_for_functions.append("Set a favourite hostname manually")
+
+text_for_functions.append("Store the actual hostname into the list")
 
 
 def function12():
+    showfavourite()
+    setfavourite()
+    showfavourite()
+
+
+text_for_functions.append("Store a self-defined hostname into the list")
+
+
+def function13():
     showfavourite()
     nametoset = loadfavourite_command()
     setname(nametoset)
@@ -398,19 +427,15 @@ def function12():
 text_for_functions.append("Load a favourite hostname from the list")
 
 
-def function13():
-    showfavourite()
-    storefavourite_command()
-    showfavourite()
-
-text_for_functions.append("Store actual hostname as favourite in the list")
-
-
 def function14():
-    pass
+    showfavourite()
+    raw_input("\nPress [Enter] to change into a hostname from this list!")
+    nametoset = randomfav()
+    setname(nametoset)
+    showfavourite()
 
 
-text_for_functions.append("")
+text_for_functions.append("Load a random hostname from the list")
 
 
 def function15():
@@ -477,6 +502,7 @@ if __name__ == '__main__':
         if counter > 0:
             raw_input("\nPress Enter to continue!")
         counter += 1
+        reboot = False
         host
         stored
         if which_menue == 1:
