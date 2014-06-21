@@ -33,6 +33,8 @@ import socket
 import random
 import string
 import commandeer
+import time
+import webbrowser
 
 
 # vars
@@ -55,7 +57,7 @@ content = []
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.3.1"
+versionnumber = "0.3.2"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
@@ -214,6 +216,10 @@ def fixname():                                       # reset the already stored 
 
 def help_command():                                 # call the help-function
     print"SORRY, help is empty"
+    time.sleep(1)
+    print("But wait...")
+    time.sleep(2)
+    webbrowser.open("https://github.com/dr1ll/hostname")
 
 
 def showfavourite():                                 # showes a favourites-list
@@ -308,7 +314,7 @@ def storefavourite_command():                       # store a favourite hostname
     outputfile.close()
 
 
-def randomfav():
+def randomfav_command():
     ranfav = ""
     goon = True
     host = socket.gethostname()
@@ -440,7 +446,7 @@ text_for_functions.append("Load a favourite hostname from the list")
 def function14():
     showfavourite()
     raw_input("\nPress [Enter] to change into a hostname from this list!")
-    nametoset = randomfav()
+    nametoset = randomfav_command()
     setname(nametoset)
     showfavourite()
 
