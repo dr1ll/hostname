@@ -57,7 +57,7 @@ content = []
 ### Change these vars for your menue:
 
 # Count your versions here:
-versionnumber = "0.3.2"
+versionnumber = "0.3.3"
 
 # How many columns do you have in your window for default (Standard=80)?
 columns = 80
@@ -332,9 +332,23 @@ def randomfav_command():
     return ranfav
 
 
-def setname(toset):   
-    reboot = True                                  # function for setting the hostname
+def setname(toset):
     os.system("hostname -b {0}".format(toset))
+    hostsfile = open('/etc/hosts', 'r')
+    hostarray = hostsfile.read()
+    hostsfile.close()
+    hostarray = hostarray.split("\n")
+    exists = False
+    for i in range(len(hostarray)):
+        if str("127.0.1.1") in hostarray[i]:
+            hostarray[i] = str("127.0.1.1   "+str(toset))
+            exists = True
+    if exists == False:
+        hostarray.append("127.0.1.1    "+str(toset))
+    hosttext = "\n".join(hostarray)
+    hostsfile = open('/etc/hosts', 'w')
+    hostsfile.write(hosttext)
+    hostsfile.close()
 
 
 ### Inserting your functionality:
